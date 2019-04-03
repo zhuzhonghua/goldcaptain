@@ -15,8 +15,6 @@ protected:
   void update();
   void draw();
   void processInput();
-
-  SDL_Texture* createSolid();
   
 protected:
   bool _gameExit;
@@ -33,9 +31,5 @@ protected:
   InputManager _inputMgr;
 
   DungeonMap* _map;
-  SDL_Texture* _texture;
-  SDL_Rect r1;
-  SDL_Rect r2;
-
-  int _cellSize;
+  SDL_Texture* _wall;
 };
