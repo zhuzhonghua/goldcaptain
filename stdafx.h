@@ -6,6 +6,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <list>
 #include <stdlib.h>
 #include <time.h>
 #include <iostream>

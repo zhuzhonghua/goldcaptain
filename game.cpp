@@ -21,7 +21,7 @@ void Game::init()
   _fpsLimiter.setMaxFPS(60.0f);
 
   _map = new DungeonMap();
-  _map->initRooms();
+  _map->init();
 
   // black wall
   _wall = ImageUtil::createSolid(_renderer, 2, 2, 0, 0, 0, 255);
