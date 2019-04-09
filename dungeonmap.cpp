@@ -44,15 +44,15 @@ void DungeonMap::init()
 {
   initRooms();
 
-  do {
-    enter = randomRoom();
-  } while (enter->getRect().w < 4 || enter->getRect().h < 4);
-
-  do {
-    exit = randomRoom();
-  } while (exit == enter || exit->getRect().w < 4 || exit->getRect().h < 4);
-
-  buildDistanceMap(exit);
+  //do {
+  //  enter = randomRoom();
+  //} while (enter->getRect().w < 4 || enter->getRect().h < 4);
+  //
+  //do {
+  //  exit = randomRoom();
+  //} while (exit == enter || exit->getRect().w < 4 || exit->getRect().h < 4);
+  //
+  //buildDistanceMap(exit);
 }
 
 void DungeonMap::initRooms()
@@ -60,17 +60,17 @@ void DungeonMap::initRooms()
   enter = NULL;
   exit = NULL;
   
-  Rect rect = {0, 0, 960, 640};
+  Rect rect = {0, 0, 32, 32};
   split(rect);
 
-  std::vector<Room*> ra(rooms.begin(), rooms.end());
-  for (int i = 0; i < ra.size() - 1; i++) 
-  {
-    for (int j = i + 1; j < ra.size(); j++) 
-    {
-      ra[i]->addNeighbour(ra[j]);
-    }
-  }
+  //std::vector<Room*> ra(rooms.begin(), rooms.end());
+  //for (int i = 0; i < ra.size() - 1; i++) 
+  //{
+  //  for (int j = i + 1; j < ra.size(); j++) 
+  //  {
+  //    ra[i]->addNeighbour(ra[j]);
+  //  }
+  //}
 }
 
 void DungeonMap::split(const Rect rect)

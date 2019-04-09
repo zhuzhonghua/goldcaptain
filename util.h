@@ -12,13 +12,3 @@ protected:
   boost::random::uniform_int_distribution<> _rndInt;
   boost::random::uniform_real_distribution<> _rndDouble;
 };
-
-class Point{
-public:
-  Point();
-protected:
-  void init(float xp, float yp);
-public:
-  float x;
-  float y;
-};

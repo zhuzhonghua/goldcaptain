@@ -4,6 +4,7 @@
 #include "inputmanager.h"
 
 class DungeonMap;
+class Camera;
 
 class Game{
 public:
@@ -11,6 +12,7 @@ public:
   void init();
   void run();
 
+  Camera* getCamera() { return camera; }
 protected:
   void update();
   void draw();
@@ -30,6 +32,8 @@ protected:
 
   InputManager _inputMgr;
 
+  Camera* camera;
+  
   DungeonMap* _map;
   SDL_Texture* _wall;
 };

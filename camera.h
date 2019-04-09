@@ -6,7 +6,9 @@ class Camera{
 public:
   Point getPos();
   void setPos(Point p);
-  void update();
+
+  Point screenToWorld(Point p);
+  Point worldToScreen(Point p);
 protected:
-  Point _pos;
+  Point pos;
 };

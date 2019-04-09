@@ -3,8 +3,6 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
-typedef SDL_Rect Rect;
-
 class Room {
 public:
   Room();

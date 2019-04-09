@@ -23,3 +23,6 @@ static inline void fatalError(std::string info)
   SDL_Quit();
   exit(1);
 }
+
+typedef SDL_Rect Rect;
+typedef SDL_Point Point;

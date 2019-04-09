@@ -4,15 +4,28 @@
 
 Point Camera::getPos()
 {
-  return _pos;
+  return pos;
 }
 
 void Camera::setPos(Point p)
 {
-  _pos = p;
+  pos = p;
 }
 
-void Camera::update()
+Point Camera::screenToWorld(Point p)
 {
-  
+  Point ret = p;
+  ret.x += pos.x;
+  ret.y += pos.y;
+
+  return ret;
+}
+
+Point Camera::worldToScreen(Point p)
+{
+  Point ret = p;
+  ret.x -= pos.x;
+  ret.y -= pos.y;
+
+  return ret;
 }

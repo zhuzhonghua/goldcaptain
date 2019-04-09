@@ -3,6 +3,7 @@
 #include "util.h"
 #include "dungeonmap.h"
 #include "imageutil.h"
+#include "camera.h"
 
 Game::Game()
 {
@@ -25,6 +26,7 @@ void Game::init()
 
   // black wall
   _wall = ImageUtil::createSolid(_renderer, 2, 2, 0, 0, 0, 255);
+  camera = new Camera();
 }
 
 void Game::run()
@@ -55,24 +57,47 @@ void Game::run()
 
 void Game::draw()
 {
-  int count=0;
   std::set<Room*> rooms = _map->getRooms();
   for (std::set<Room*>::iterator it = rooms.begin();
        it != rooms.end(); it++) {
     Room* room = *it;
     Rect rect = room->getRect();
 
-    SDL_Rect dst = rect;;
-    SDL_RenderCopy(_renderer, _wall, NULL, &dst);
-
-    if (count++ >= 100){
-      // break;
-    }
+    Point p = camera->worldToScreen({rect.x, rect.y});
+    
+    SDL_Rect dst = rect;
+    dst.x = p.x;
+    dst.y = p.y;
+    dst.x += 1;
+    dst.y += 1;
+    dst.w -= 1;
+    dst.h -= 1;
+    SDL_RenderCopy(_renderer, _wall, NULL, &dst); 
   }
 }
 
 void Game::update()
-{    
+{
+  if (_inputMgr.isKeyDown(SDLK_a)) {
+    Point point = camera->getPos();
+    point.x -= 1;
+    camera->setPos(point);
+  }
+  else if (_inputMgr.isKeyDown(SDLK_d)) {
+    Point point = camera->getPos();
+    point.x += 1;
+    camera->setPos(point);
+  }
+  else if (_inputMgr.isKeyDown(SDLK_w)) {
+    Point point = camera->getPos();
+    point.y -= 1;
+    camera->setPos(point);
+  }
+  else if (_inputMgr.isKeyDown(SDLK_s)) {
+    Point point = camera->getPos();
+    point.y += 1;
+    camera->setPos(point);
+  }
 }
 
 void Game::processInput()
