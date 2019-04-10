@@ -27,6 +27,7 @@ void Game::init()
   // black wall
   _wall = ImageUtil::createSolid(_renderer, 2, 2, 0, 0, 0, 255);
   camera = new Camera();
+  Camera::setMain(camera);
 }
 
 void Game::run()
@@ -63,15 +64,13 @@ void Game::draw()
     Room* room = *it;
     Rect rect = room->getRect();
 
-    Point p = camera->worldToScreen({rect.x, rect.y});
+    rect.x += 1;
+    rect.y += 1;
+    rect.w -= 1;
+    rect.h -= 1;
     
-    SDL_Rect dst = rect;
-    dst.x = p.x;
-    dst.y = p.y;
-    dst.x += 1;
-    dst.y += 1;
-    dst.w -= 1;
-    dst.h -= 1;
+    Rect dst = camera->worldToScreenRect(rect);    
+    
     SDL_RenderCopy(_renderer, _wall, NULL, &dst); 
   }
 }
@@ -97,6 +96,12 @@ void Game::update()
     Point point = camera->getPos();
     point.y += 1;
     camera->setPos(point);
+  }
+  else if (_inputMgr.isKeyDown(SDLK_EQUALS)) {
+    camera->zoomIn(0.1);
+  }
+  else if (_inputMgr.isKeyDown(SDLK_MINUS)) {
+    camera->zoomOut(0.1);
   }
 }
 

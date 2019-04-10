@@ -2,6 +2,25 @@
 
 #include "camera.h"
 
+Camera* Camera::mainCamera = NULL;
+
+Camera* Camera::getMain()
+{
+  return mainCamera;
+}
+
+void Camera::setMain(Camera* camera)
+{
+  mainCamera = camera;
+}
+
+Camera::Camera()
+{
+  zoom = 1;
+
+  pos = {0, 0};
+}
+
 Point Camera::getPos()
 {
   return pos;
@@ -28,4 +47,25 @@ Point Camera::worldToScreen(Point p)
   ret.y -= pos.y;
 
   return ret;
+}
+
+Rect Camera::worldToScreenRect(Rect rect)
+{
+  Rect ret;
+  ret.w = rect.w*zoom;
+  ret.h = rect.h*zoom;
+  ret.x = (rect.x - pos.x)*zoom;
+  ret.y = (rect.y - pos.y)*zoom;
+
+  return ret;
+}
+
+void Camera::zoomIn(float d)
+{
+  zoom += d;
+}
+
+void Camera::zoomOut(float d)
+{
+  zoom -= d;
 }

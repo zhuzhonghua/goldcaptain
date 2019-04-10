@@ -60,7 +60,7 @@ void DungeonMap::initRooms()
   enter = NULL;
   exit = NULL;
   
-  Rect rect = {0, 0, 32, 32};
+  Rect rect = {32, 32, 32, 32};
   split(rect);
 
   //std::vector<Room*> ra(rooms.begin(), rooms.end());
