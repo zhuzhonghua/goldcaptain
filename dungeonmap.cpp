@@ -92,15 +92,15 @@ void DungeonMap::split(const Rect rect)
     SimpleRand rnd(3, w-3);
     int w2 = rnd.getIntRnd();
     
-    split({x, y, w2, h});
-    split({x+w2, y, w-w2, h});
+    split(Utils::rect(x, y, w2, h));
+    split(Utils::rect(x+w2, y, w-w2, h));
   }
   else if (h > maxRoomSize && w < minRoomSize) {
     SimpleRand rnd(3, h-3);
     int h2 = rnd.getIntRnd();
     
-    split({x, y, w, h2});
-    split({x, y+h2, w, h-h2});
+    split(Utils::rect(x, y, w, h2));
+    split(Utils::rect(x, y+h2, w, h-h2));
   }
   else if ((rndDouble.getDoubleRnd() < minRoomSize*minRoomSize/(double)square && w < maxRoomSize && h < maxRoomSize) || w < minRoomSize || h < minRoomSize){
     Room* r = new Room();
@@ -112,15 +112,15 @@ void DungeonMap::split(const Rect rect)
       SimpleRand rnd(3, w-3);
       int w2 = rnd.getIntRnd();
     
-      split({x, y, w2, h});
-      split({x+w2, y, w-w2, h});
+      split(Utils::rect(x, y, w2, h));
+      split(Utils::rect(x+w2, y, w-w2, h));
     }
     else {
       SimpleRand rnd(3, h-3);
       int h2 = rnd.getIntRnd();
     
-      split({x, y, w, h2});
-      split({x, y+h2, w, h-h2});      
+      split(Utils::rect(x, y, w, h2));
+      split(Utils::rect(x, y+h2, w, h-h2));      
     }
   }
 }

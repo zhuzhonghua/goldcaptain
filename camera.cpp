@@ -18,7 +18,8 @@ Camera::Camera()
 {
   zoom = 1;
 
-  pos = {0, 0};
+  pos.x = 0;
+  pos.y = 0;
 }
 
 Point Camera::getPos()

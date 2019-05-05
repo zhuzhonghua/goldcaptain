@@ -12,8 +12,6 @@
 #include <iostream>
 #include <boost/random.hpp>
 
-#include "util.h"
-
 static inline void fatalError(std::string info)
 {
   std::cout << info << std::endl;
@@ -26,3 +24,5 @@ static inline void fatalError(std::string info)
 
 typedef SDL_Rect Rect;
 typedef SDL_Point Point;
+
+#include "util.h"
