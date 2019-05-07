@@ -1,33 +1,33 @@
 TEMP := temp
 TARGET := goldcaptain
-
-#SRC := $(wildcard glm/*.hpp)
-SRC := $(wildcard *.cpp)
-
-#replace slash(/) to dot(.)
-SRC_SLASH := $(subst /,.,$(SRC))
-#temporary files under temp dir
-OBJECTS := $(patsubst %.cpp, $(TEMP)/%.cpp.o, $(SRC_SLASH))
-#the real dep file
-OBJECTS_DEPS := $(patsubst %.o, %.d, $(OBJECTS))
+MAKE_DEP := $(TEMP)/make_dep.d
+DIRS = .
 
 CPPFLAGS := $(shell sdl2-config --cflags)
 CPPLIBS := $(shell sdl2-config --libs) -lfreetype -lSDL2_mixer -lSDL2_image
+
+define TEMP_O
+TEMP_FILE = $(TEMP)/$(subst /,., $(1)).o
+$(shell g++ -MM $(CPPFLAGS) $(1))
+endef
+
+#get all srcs
+SRC := $(foreach DIR,$(DIRS),$(wildcard $(DIR)/*.cpp))
+#remove ./
+SRC := $(subst ./,,$(SRC))
+
+#replace slash(/) to dot(.)
+SRC_SLASH := $(subst /,., $(SRC))
+
+#temporary files under temp dir
+OBJECTS := $(TEMP)/$($(SRC_SLASH): %=%.o)
+
 
 goldcaptain:$(OBJECTS)
 	g++ -o $@ $(OBJECTS) $(CPPLIBS)
 
 
-%.temp: %.cpp
-	rm -f $@; \
-	g++ -MM $(CPPFLAGS) $< > $@.$$$$; \
-	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
-	rm -f $@.$$$$
-
-#check if make target is default
-ifeq ($(MAKECMDGOALS),)
-$(warning $(shell python3 make_dep.py $(SRC)))
-endif
+$(foreach CPP,$(SRC),$(eval $(call TEMP_o,$(CPP))))
 
 #check if make target is default
 #ifeq ($(MAKECMDGOALS),)
