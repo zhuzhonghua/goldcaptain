@@ -8,7 +8,7 @@ import re
 dirs = "."
 temp_dir = "temp"
 target = "goldcaptain"
-cpp_flags = os.popen("sdl2-config --cflags").read().replace("\n","")
+cpp_flags = os.popen("sdl2-config --cflags").read().replace("\n","")+" -Wall -g "
 
 cpp_libs = os.popen("sdl2-config --libs").read().replace("\n","")+" -lfreetype -lSDL2_mixer -lSDL2_image"
 
@@ -51,7 +51,7 @@ def write_temp_o(make_file, cpp_files):
 	
 target_cmd = """
 $(TARGET):$(OBJS)
-	g++ -o $@ $< $(CPPLIBS)
+	g++ $(OBJS) -o $@ $(CPPLIBS)
 """.replace("$(TARGET)", target).replace("$(OBJS)", " ".join(objs))
 
 clean_cmd = """
