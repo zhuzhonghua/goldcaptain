@@ -2,42 +2,45 @@
 #include "game.h"
 #include "util.h"
 #include "dungeonmap.h"
-#include "imageutil.h"
+#include "imagemanager.h"
 #include "camera.h"
+#include "window.h"
+#include "graphic.h"
 
 Game::Game()
 {
-  _width = 960;
-  _height = 640;
-
   _gameExit = false;
 }
 
 void Game::init()
 {
-  SDL_Init(SDL_INIT_EVERYTHING);
-  _window = SDL_CreateWindow( "Gold Captain", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
-  _renderer = SDL_CreateRenderer(_window, -1, 0);
+	_window = new Zengine::Window("Gold Captain", 640, 960);
 
   _fpsLimiter.setMaxFPS(60.0f);
 
   _map = new DungeonMap();
   _map->init();
 
+	_imageMgr = new Zengine::ImageManager();
+	_imageMgr->setRender(_window->getRender());
+
+	Zengine::Graphic::setRender(_window->getRender());
+	
   // black wall
-  _wall = ImageUtil::createSolid(_renderer, 2, 2, 0, 0, 0, 255);
+  _wall = _imageMgr->getSolid(2, 2, 0, 0, 0, 255);
   camera = new Camera();
   Camera::setMain(camera);
 }
 
 void Game::run()
 {
-  SDL_StartTextInput();	
+  _window->start();
+	
   while(_gameExit == false){
     _fpsLimiter.begin();
 
-    SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
-    SDL_RenderClear(_renderer);
+		Zengine::Graphic::setDrawColor(255, 255, 255, 255);
+		Zengine::Graphic::clearRender();
     
     _inputMgr.update();
     
@@ -45,15 +48,12 @@ void Game::run()
     update();
     draw();
     
-    SDL_RenderPresent(_renderer);
+    _window->renderPresent();
     
     _fps = _fpsLimiter.end();
   }
-  SDL_StopTextInput();
-
-  SDL_DestroyWindow(_window);
-  SDL_DestroyRenderer(_renderer);
-  SDL_Quit();
+	
+  _window->end();
 }
 
 void Game::draw()
@@ -70,8 +70,8 @@ void Game::draw()
     rect.h -= 1;
     
     Rect dst = camera->worldToScreenRect(rect);    
-    
-    SDL_RenderCopy(_renderer, _wall, NULL, &dst); 
+
+		Zengine::Graphic::renderCopy(_wall, NULL, &dst);
   }
 }
 

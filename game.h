@@ -6,6 +6,11 @@
 class DungeonMap;
 class Camera;
 
+namespace Zengine{
+class Window;
+class ImageManager;
+};
+
 class Game{
 public:
   Game();
@@ -24,13 +29,10 @@ protected:
 
   float _fps;
 protected:
-  int _width;
-  int _height;
-  
-  SDL_Window* _window;
-  SDL_Renderer* _renderer;
-
-  InputManager _inputMgr;
+	Zengine::Window* _window;
+	Zengine::ImageManager* _imageMgr;
+	
+	Zengine::InputManager _inputMgr;
 
   Camera* camera;
   

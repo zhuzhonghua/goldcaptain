@@ -5,10 +5,10 @@ import os
 import re
 
 #all src dirs
-dirs = "."
+dirs = [".", "zengine"]
 temp_dir = "temp"
 target = "goldcaptain"
-cpp_flags = os.popen("sdl2-config --cflags").read().replace("\n","")+" -Wall -g "
+cpp_flags = os.popen("sdl2-config --cflags").read().replace("\n","")+" -Wall -g -Izengine"
 
 cpp_libs = os.popen("sdl2-config --libs").read().replace("\n","")+" -lfreetype -lSDL2_mixer -lSDL2_image"
 
@@ -20,10 +20,10 @@ if not os.path.exists(temp_dir):
 #########################################
 #split line
 cpp_files = []
-for one_dir in dirs.split(' '):
-	cpp_files = cpp_files + [cpp for cpp in os.listdir(one_dir) if cpp.endswith('.cpp') or cpp.endswith('.c')]
+for one_dir in dirs:
+	cpp_files = cpp_files + [one_dir+"/"+cpp for cpp in os.listdir(one_dir) if cpp.endswith('.cpp') or cpp.endswith('.c') or cpp.endswith('.cc')]
 
-get_temp_o = lambda cpp:temp_dir+"/"+cpp.replace(".cpp",".o").replace("/",".")
+get_temp_o = lambda cpp:temp_dir+"/"+cpp.replace("./","").replace(".cpp",".o").replace(".cc",".o").replace(".c",".o").replace("/",".")
 	
 objs = list(map(get_temp_o, cpp_files))
 
