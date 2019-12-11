@@ -6,6 +6,7 @@
 #include "camera.h"
 #include "window.h"
 #include "graphic.h"
+#include "image.h"
 
 Game::Game()
 {

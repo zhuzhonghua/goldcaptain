@@ -9,6 +9,7 @@ class Camera;
 namespace Zengine{
 class Window;
 class ImageManager;
+class Image;
 };
 
 class Game{
@@ -37,5 +38,5 @@ protected:
   Camera* camera;
   
   DungeonMap* _map;
-  SDL_Texture* _wall;
+	Zengine::Image* _wall;
 };
