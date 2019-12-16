@@ -8,9 +8,19 @@ import re
 dirs = [".", "zengine"]
 temp_dir = "temp"
 target = "goldcaptain"
-cpp_flags = os.popen("sdl2-config --cflags").read().replace("\n","")+" -Wall -g -Izengine"
+cpp_flags = os.popen("sdl2-config --cflags").read().replace("\n","")+" -S -Wall -Wextra -Wpedantic -Izengine -Izengine/scheme/include -D__SDL__ -DSEXP_STATIC_LIBRARY"
 
 cpp_libs = os.popen("sdl2-config --libs").read().replace("\n","")+" -lfreetype -lSDL2_mixer -lSDL2_image"
+
+scheme_src = """
+zengine/scheme/bignum.c
+zengine/scheme/eval.c
+zengine/scheme/gc.c
+zengine/scheme/opcodes.c
+zengine/scheme/sexp.c
+zengine/scheme/vm.c
+zengine/scheme/include/chibi/sexp-hufftabs.c
+"""
 
 ############################
 #create tempdir
@@ -22,6 +32,8 @@ if not os.path.exists(temp_dir):
 cpp_files = []
 for one_dir in dirs:
 	cpp_files = cpp_files + [one_dir+"/"+cpp for cpp in os.listdir(one_dir) if cpp.endswith('.cpp') or cpp.endswith('.c') or cpp.endswith('.cc')]
+
+cpp_files = cpp_files + scheme_src.split()
 
 get_temp_o = lambda cpp:temp_dir+"/"+cpp.replace("./","").replace(".cpp",".o").replace(".cc",".o").replace(".c",".o").replace("/",".")
 	
