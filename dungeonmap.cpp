@@ -1,6 +1,7 @@
-#include "stdafx.h"
+#include "zengine/stdafx.h"
 
 #include "dungeonmap.h"
+
 
 void Room::addNeighbour(Room* room)
 {

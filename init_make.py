@@ -41,41 +41,44 @@ get_temp_o = lambda cpp:temp_dir+"/"+cpp.replace("./","").replace(".cpp",".o").r
 	
 objs = list(map(get_temp_o, cpp_files))
 
-phony = """
-.PHONY: clean all
-all:$(TARGET)
-""".replace("$(TARGET)", target)
 
 flags = """
 CPPFLAGS := $(cpp_flags)
 CPPLIBS := $(cpp_libs)
 CC := $(cc)
 
+OBJS := $(objs)
 
-""".replace("$(cpp_flags)", cpp_flags).replace("$(cpp_libs)", cpp_libs).replace("$(cc)", cc)
+TARGET := $(target)
 
-def filter_head(dep_str):
-	t1 = re.sub(r'\S*\/SDL2\/\S*', "", dep_str)
-	t2 = re.sub(r'\S*\/glm\/\S*', "", t1)
-	t3 = re.sub(r'\\\s*', "", t2)
-	
-	return t3
+""".replace("$(cpp_flags)", cpp_flags).replace("$(cpp_libs)", cpp_libs).replace("$(cc)", cc).replace("$(objs)", " ".join(objs)).replace("$(target)", target)
+
+phony = """
+.PHONY: clean all
+all:$(TARGET)
+
+"""
+
+
+def filter_head(t1):
+	exp_lamb = lambda exp: exp.find("\\") == -1 and exp.find("SDL2") == -1 and exp.find("glm") == -1
+	return " ".join(filter(exp_lamb, t1.split()))+"\n"
 	
 def get_gen_temp_o(cpp):
-	cmd = "$(cc) -MM $(CPPFLAGS) ".replace("$(cc)", cc)+cpp
-	return filter_head(os.popen(cmd.replace("$(CPPFLAGS)", cpp_flags)).read())+"\t$(cc) -c $< -o $@ $(CPPFLAGS)\n".replace("$(CPPFLAGS)", cpp_flags).replace("$(cc)", cc)
+	cmd = "$(cc) -MM $(CPPFLAGS) ".replace("$(CPPFLAGS)", cpp_flags).replace("$(cc)", cc)+cpp
+	return filter_head(os.popen(cmd).read())+"\t$(CC) $(CPPFLAGS) -o $@ $(cpp)\n".replace("$(cpp)", cpp)
 	
 def write_temp_o(make_file, cpp_files):
 	for cpp in cpp_files:		
 		temp_o = get_temp_o(cpp)		
-		make_file.write(re.sub(r'^.*\.o\s*:', temp_o+":", get_gen_temp_o(cpp)))
+		make_file.write(re.sub(r'^.*\.o\s*:', temp_o+":", get_gen_temp_o(cpp.replace("./",""))))
 		make_file.write("\n")
 		print(temp_o+":"+cpp)
 	
 target_cmd = """
 $(TARGET):$(OBJS)
-	$(cc) $(OBJS) -o $@ $(CPPLIBS)
-""".replace("$(TARGET)", target).replace("$(OBJS)", " ".join(objs)).replace("$(cc)", cc)
+	$(CC)  $(CPPLIBS) -o $@ $^
+"""
 
 clean_cmd = """
 clean:
@@ -84,23 +87,21 @@ clean:
 	rm -f $(TARGET)
 """.replace("$(TARGET)", target)
 
-##with open("Makefile", "w") as make_file:
-##	print("start write makefile")
-##	make_file.write(phony)
-##	print(phony)
-##	make_file.write(flags)
-##	print(flags)
-##	write_temp_o(make_file, cpp_files)
-##	make_file.write(target_cmd)
-##	print(target_cmd)
-##	make_file.write(clean_cmd)
-##	print(clean_cmd)
-##	print("end write makefile")
+with open("Makefile", "w") as make_file:
+	print("start write makefile")
+	make_file.write(flags)
+	print(flags)
+	
+	make_file.write(phony)
+	print(phony)
+	
+	write_temp_o(make_file, cpp_files)
+	make_file.write(target_cmd)
+	print(target_cmd)
+	
+	make_file.write(clean_cmd)
+	print(clean_cmd)
+	print("end write makefile")
 
-#print(get_gen_temp_o("dungeonmap.cpp"))
-t1 = os.popen("g++ -MM $(CPPFLAGS) zengine/timing.cpp".replace("$(CPPFLAGS)", cpp_flags)).read()
-#print(re.sub(r'\s.*\/SDL2\/.*\s', "", "bbc /usr/include/SDL2/SDL.h def"))
-t2 = re.sub(r'\S*\/SDL2\/\S*', "", t1)
-t3 = re.sub(r'\S*\/glm\/\S*', "", t2)
-t4 = re.sub(r'\\\s*', "", t3)
-print(t3)
+#t1 = os.popen("g++ -MM $(CPPFLAGS) dungeonmap.cpp".replace("$(CPPFLAGS)", cpp_flags)).read()
+#print(filter_head(t1))

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "zengine/stdafx.h"
+
 class Room {
 public:
   Room();
