@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.5)
 
 project(goldcaptain)
 
-aux_source_directory(. SRC1)
+aux_source_directory(src SRC1)
 aux_source_directory(zengine SRC2)
 aux_source_directory(zengine/scheme SRC3)
 
@@ -22,6 +22,6 @@ set(CMAKE_C_FLAGS ${CMAKE_CXX_FLAGS})
 
 ADD_DEFINITIONS(-DHAVE_CONFIG_H -DPCRE_STATIC -DSUPPORT_UTF -DSUPPORT_UTF8 -D__SDL__ -DSEXP_STATIC_LIBRARY)
 
-add_executable(goldcaptain ${SRC} ${SRC2} ${SRC3} main.cpp)
+add_executable(goldcaptain ${SRC1} ${SRC2} ${SRC3})
 target_link_libraries(goldcaptain ${SDL2_LIBRARIES})
 
