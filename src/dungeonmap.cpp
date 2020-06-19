@@ -1,6 +1,6 @@
 #include "zengine.h"
 #include "util.h"
-
+#include "game.h"
 #include "dungeonmap.h"
 
 using namespace Zengine;
@@ -63,7 +63,7 @@ void DungeonMap::initRooms()
   enter = NULL;
   exit = NULL;
   
-  Rect rect = {32, 32, 32, 32};
+  Rect rect = {0, 0, Game::getWidth(), Game::getHeignt()};
   split(rect);
 
   //std::vector<Room*> ra(rooms.begin(), rooms.end());
@@ -76,56 +76,71 @@ void DungeonMap::initRooms()
   //}
 }
 
-void DungeonMap::split(const Rect rect)
+void DungeonMap::split(Rect rect)
 {
-  int maxRoomSize = 9;
-  int minRoomSize = 7;
+  int roomSizeLimit = 9;
 
-  int w = rect.w;
-  int h = rect.h;
-  
   int x = rect.x;
   int y = rect.y;
+  int w = rect.w;
+  int h = rect.h;
 
-  int square = w*h;
-  
-  SimpleRand rndDouble;
-  
-  if (w > maxRoomSize && h < minRoomSize) {
-    SimpleRand rnd(3, w-3);
-    int w2 = rnd.getIntRnd();
+  Rect rect1;
+  Rect rect2;
     
-    split(Utils::rect(x, y, w2, h));
-    split(Utils::rect(x+w2, y, w-w2, h));
-  }
-  else if (h > maxRoomSize && w < minRoomSize) {
-    SimpleRand rnd(3, h-3);
-    int h2 = rnd.getIntRnd();
-    
-    split(Utils::rect(x, y, w, h2));
-    split(Utils::rect(x, y+h2, w, h-h2));
-  }
-  else if ((rndDouble.getDoubleRnd() < minRoomSize*minRoomSize/(double)square && w < maxRoomSize && h < maxRoomSize) || w < minRoomSize || h < minRoomSize){
+  if (rect.w > roomSizeLimit && rect.h > roomSizeLimit) {
+    DoubleRand dbleRnd;
+    double rndNum = dbleRnd.getDouble();
+    if (rndNum > 0.5f) {
+      IntRand rnd(3, h-3);
+      int h2 = rnd.getInt();
+      rect1 = Utils::rect(x, y, w, h2);
+      rect2 = Utils::rect(x, y+h2, w, h-h2);
+    } else {
+      IntRand rnd(3, w-3);
+      int w2 = rnd.getInt();
+      rect1 = Utils::rect(x, y, w2, h);
+      rect2 = Utils::rect(x+w2, y, w-w2, h);
+    }
+  } else if (w > roomSizeLimit) {
+    IntRand rnd(3, w-3);
+    int w2 = rnd.getInt();
+    rect1 = Utils::rect(x, y, w2, h);
+    rect2 = Utils::rect(x+w2, y, w-w2, h);
+  } else if (h > roomSizeLimit) {
+    IntRand rnd(3, h-3);
+    int h2 = rnd.getInt();
+    rect1 = Utils::rect(x, y, w, h2);
+    rect2 = Utils::rect(x, y+h2, w, h-h2);
+  } else {
+    ASSERT(h >= 3);
+    ASSERT(w >= 3);
+
+    int h2;
+    if (h-1 > 3) {
+      IntRand rnd(3, h-1);
+      h2 = rnd.getInt();
+    } else {
+      h2 = 3;
+    }
+
+    int w2;
+    if (w-1 > 3) {
+      IntRand rnd2(3, w-1);
+      w2 = rnd2.getInt();
+    } else {
+      w2 = 3;
+    }    
+
+    Rect rec = {x+(w-w2)/2, y+(h-h2)/2,w2, h2};
     Room* r = new Room();
-    r->setRect(rect);
+    r->setRect(rec);
     rooms.insert(r);
+    return;
   }
-  else {
-    if (rndDouble.getDoubleRnd() < (double)(w - 2) / (w + h - 4)) {
-      SimpleRand rnd(3, w-3);
-      int w2 = rnd.getIntRnd();
-    
-      split(Utils::rect(x, y, w2, h));
-      split(Utils::rect(x+w2, y, w-w2, h));
-    }
-    else {
-      SimpleRand rnd(3, h-3);
-      int h2 = rnd.getIntRnd();
-    
-      split(Utils::rect(x, y, w, h2));
-      split(Utils::rect(x, y+h2, w, h-h2));      
-    }
-  }
+
+  split(rect1);
+  split(rect2);
 }
 
 void DungeonMap::buildDistanceMap(Room* focus)
@@ -165,13 +180,14 @@ void DungeonMap::buildDistanceMap(Room* focus)
 
 Room* DungeonMap::randomRoom()
 {
-  SimpleRand rnd(0, rooms.size()-1);
-  int count = rnd.getIntRnd();
+  //SimpleRand rnd(0, rooms.size()-1);
+  //int count = rnd.getIntRnd();
 
-  std::set<Room*>::iterator itr = rooms.begin();
-  while(count-- > 0) {
-    itr++;
-  }
-
-  return *itr;
+  //std::set<Room*>::iterator itr = rooms.begin();
+  //while(count-- > 0) {
+  //  itr++;
+  //}
+//
+  //return *itr;
+  return NULL;
 }

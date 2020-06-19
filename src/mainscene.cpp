@@ -7,7 +7,8 @@
 #include "texturecache.h"
 #include "camera.h"
 #include "game.h"
-#include "inputmanager.h"
+
+#include "dungeonmap.h"
 
 // Minimum virtual display size for portrait orientation
 
@@ -21,6 +22,7 @@ Camera* MainScene::uiCamera;
 
 MainScene::MainScene()
 {
+	dgnMap = new DungeonMap();
 }
 
 MainScene::~MainScene()
@@ -30,63 +32,46 @@ MainScene::~MainScene()
 
 void MainScene::init()
 {
+  dgnMap->init();
 	//Image* img = new Image("./test.jpg");
 	//add(img);
 
 	//Button* btn = new Button("./test.jpg");
 	//add(btn);
 
-	BitmapText* bt = new BitmapText("hello");
-	add(bt);
+	//BitmapText* bt = new BitmapText("hello");
+	//add(bt);
 
-	Texture* tx = TextureCache::createSolid(255, 255, 255, 255);
-	Rect rect;
-	rect.x = 100;
-	rect.y = 100;
-	rect.w = 10;
-	rect.h = 10;
+	//Texture* tx = TextureCache::createSolid(255, 255, 255, 255);
+	//Rect rect;
+	//rect.x = 100;
+	//rect.y = 100;
+	//rect.w = 10;
+	//rect.h = 10;
+	//
+	//for (int i = 0; i < 9; i++)
+	//{
+	//	Image* img = new Image(tx);
+	//	testImgs.push_back(img);
+	//	add(img);
+//
+	//	img->setRect(rect);
+	//	rect.x += 20;
+	//}
 	
-	for (int i = 0; i < 9; i++)
-	{
-		Image* img = new Image(tx);
+  Texture* tx = TextureCache::createSolid(255, 255, 255, 255);
+  std::set<Room*> rooms = dgnMap->getRooms();
+  for (std::set<Room*>::iterator itr = rooms.begin(); 
+        itr != rooms.end(); itr++) {
+    Room* room = *itr;
+
+    Image* img = new Image(tx);
 		testImgs.push_back(img);
 		add(img);
-
-		img->setRect(rect);
-		rect.x += 20;
-	}
-	
+    img->setRect(room->getRect());
+  }
 }
 
 void MainScene::update()
-{
-	InputManager* inputMgr = Game::inst()->getInputMgr();
-
-	Camera* camera = Camera::getMain();
-	if (inputMgr->isKeyDown(SDLK_a)) {
-    Point point = camera->getPos();
-    point.x -= 1;
-    camera->setPos(point);
-  }
-  else if (inputMgr->isKeyDown(SDLK_d)) {
-    Point point = camera->getPos();
-    point.x += 1;
-    camera->setPos(point);
-  }
-  else if (inputMgr->isKeyDown(SDLK_w)) {
-    Point point = camera->getPos();
-    point.y -= 1;
-    camera->setPos(point);
-  }
-  else if (inputMgr->isKeyDown(SDLK_s)) {
-    Point point = camera->getPos();
-    point.y += 1;
-    camera->setPos(point);
-  }
-  else if (inputMgr->isKeyDown(SDLK_EQUALS)) {
-    camera->zoomIn(0.1);
-  }
-  else if (inputMgr->isKeyDown(SDLK_MINUS)) {
-    camera->zoomOut(0.1);
-  }
+{	
 }

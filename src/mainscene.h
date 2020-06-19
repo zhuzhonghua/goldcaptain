@@ -7,6 +7,7 @@ class Camera;
 class Image;
 };
 
+class DungeonMap;
 class MainScene : public Zengine::Scene{
 public:
 	// Minimum virtual display size for portrait orientation
@@ -30,4 +31,7 @@ public:
 
 	virtual void update();
 	virtual void init();
+
+protected:	
+  DungeonMap* dgnMap;	
 };

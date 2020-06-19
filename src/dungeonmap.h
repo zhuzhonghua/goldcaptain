@@ -30,7 +30,7 @@ public:
 
   std::set<Room*> getRooms() { return rooms; }
 protected:
-  void split(const Rect rect);
+  void split(Rect rect);
   void initRooms();
   void buildDistanceMap(Room* focus);
   Room* randomRoom();
